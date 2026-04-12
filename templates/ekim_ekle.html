@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-calendar-plus"></i> Yeni Ekim Kaydı</h2>
+    <a href="/ekim" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Geri</a>
+</div>
+
+<div class="card p-4" style="max-width:600px;">
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Tarla</label>
+            <select name="tarla_id" class="form-select" required>
+                <option value="">Seçiniz...</option>
+                {% for t in tarlalar %}
+                <option value="{{ t[0] }}">{{ t[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Ürün</label>
+            <select name="urun_id" class="form-select" required>
+                <option value="">Seçiniz...</option>
+                {% for u in urunler %}
+                <option value="{{ u[0] }}">{{ u[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Ekim Tarihi</label>
+            <input type="date" name="ekim_tar" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Tahmini Hasat Tarihi</label>
+            <input type="date" name="tahmini_hasat" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Notlar</label>
+            <textarea name="notlar" class="form-control" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Kaydet</button>
+    </form>
+</div>
+
+{% endblock %}

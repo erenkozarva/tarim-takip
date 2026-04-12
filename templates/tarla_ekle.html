@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-plus-square"></i> Yeni Tarla Ekle</h2>
+    <a href="/tarlalar" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Geri</a>
+</div>
+
+<div class="card p-4" style="max-width:600px;">
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Çiftçi</label>
+            <select name="ciftci_id" class="form-select" required>
+                <option value="">Seçiniz...</option>
+                {% for c in ciftciler %}
+                <option value="{{ c[0] }}">{{ c[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">İl</label>
+            <select name="plaka_kodu" class="form-select" required>
+                <option value="">Seçiniz...</option>
+                {% for i in iller %}
+                <option value="{{ i[0] }}">{{ i[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">İlçe</label>
+            <input type="text" name="ilce" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Ada No</label>
+            <input type="text" name="ada_no" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Parsel No</label>
+            <input type="text" name="parsel_no" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Dekar</label>
+            <input type="number" name="dekar" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Kaydet</button>
+    </form>
+</div>
+
+{% endblock %}

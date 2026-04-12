@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="mb-4"><i class="bi bi-speedometer2"></i> Dashboard</h2>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card stat-card p-4">
+            <div class="text-muted small">Toplam Çiftçi</div>
+            <div class="display-6">{{ ozet.toplam_ciftci }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card p-4">
+            <div class="text-muted small">Toplam Tarla</div>
+            <div class="display-6">{{ ozet.toplam_tarla }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card p-4">
+            <div class="text-muted small">Toplam Arazi (Dekar)</div>
+            <div class="display-6">{{ ozet.toplam_dekar }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card p-4">
+            <div class="text-muted small">Toplam Ekim Kaydı</div>
+            <div class="display-6">{{ ozet.toplam_ekim }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card p-4">
+            <div class="text-muted small">Toplam Satış</div>
+            <div class="display-6">{{ ozet.toplam_satis }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <a href="/ciftciler/ekle" class="btn btn-primary w-100 py-3">
+            <i class="bi bi-person-plus"></i> Yeni Çiftçi Ekle
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="/tarlalar/ekle" class="btn btn-primary w-100 py-3">
+            <i class="bi bi-plus-square"></i> Yeni Tarla Ekle
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="/ekim/ekle" class="btn btn-primary w-100 py-3">
+            <i class="bi bi-calendar-plus"></i> Yeni Ekim Kaydı
+        </a>
+    </div>
+</div>
+
+{% endblock %}

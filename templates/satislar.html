@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="mb-4">
+    <h2><i class="bi bi-cash-stack"></i> Satışlar</h2>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Çiftçi</th>
+                    <th>Ürün</th>
+                    <th>Satış Tarihi</th>
+                    <th>Alıcı</th>
+                    <th>Miktar</th>
+                    <th>Birim Fiyat</th>
+                    <th>Toplam (TL)</th>
+                    <th>Ödeme</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in satislar %}
+                <tr>
+                    <td>{{ s[0] }}</td>
+                    <td>{{ s[1] }}</td>
+                    <td>{{ s[2] }}</td>
+                    <td>{{ s[3] }}</td>
+                    <td>{{ s[4] }}</td>
+                    <td>{{ s[5] }} {{ s[6] }}</td>
+                    <td>{{ s[7] }} ₺</td>
+                    <td>{{ s[8] }} ₺</td>
+                    <td>
+                        {% if s[9] == 'odendi' %}
+                            <span class="badge bg-success">Ödendi</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Beklemede</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

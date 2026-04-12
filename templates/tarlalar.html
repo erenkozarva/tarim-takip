@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-map"></i> Tarlalar</h2>
+    <a href="/tarlalar/ekle" class="btn btn-primary"><i class="bi bi-plus-square"></i> Yeni Ekle</a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Çiftçi</th>
+                    <th>İl</th>
+                    <th>İlçe</th>
+                    <th>Ada No</th>
+                    <th>Parsel No</th>
+                    <th>Dekar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tarlalar %}
+                <tr>
+                    <td>{{ t[0] }}</td>
+                    <td>{{ t[1] }}</td>
+                    <td>{{ t[2] }}</td>
+                    <td>{{ t[3] }}</td>
+                    <td>{{ t[4] }}</td>
+                    <td>{{ t[5] }}</td>
+                    <td>{{ t[6] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
