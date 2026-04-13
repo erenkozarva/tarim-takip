@@ -1,13 +1,7 @@
 -- =============================================
 -- Tarım Takip Sistemi - Veritabanı Şeması
--- MS SQL Server
+-- PostgreSQL
 -- =============================================
-
-CREATE DATABASE Tarim_Takip_Sistemi;
-GO
-
-USE Tarim_Takip_Sistemi;
-GO
 
 -- ---------------------------------------------
 -- TABLOLAR
@@ -17,176 +11,161 @@ CREATE TABLE iller (
     plaka_kodu  INT PRIMARY KEY,
     il_adi      VARCHAR(30) NOT NULL
 );
-GO
 
 CREATE TABLE ciftciler (
-    ciftci_id   INT PRIMARY KEY IDENTITY(1,1),
+    ciftci_id   SERIAL PRIMARY KEY,
     tc_no       VARCHAR(11) UNIQUE NOT NULL,
     ad          VARCHAR(50) NOT NULL,
     soyad       VARCHAR(50) NOT NULL,
     tel_no      VARCHAR(15),
     dogum_tar   DATE,
-    kayit_tar   DATETIME DEFAULT GETDATE()
+    kayit_tar   TIMESTAMP DEFAULT NOW()
 );
-GO
 
 CREATE TABLE tarlalar (
-    tarla_id    INT PRIMARY KEY IDENTITY(1,1),
-    ciftci_id   INT NOT NULL,
-    plaka_kodu  INT NOT NULL,
+    tarla_id    SERIAL PRIMARY KEY,
+    ciftci_id   INT NOT NULL REFERENCES ciftciler(ciftci_id),
+    plaka_kodu  INT NOT NULL REFERENCES iller(plaka_kodu),
     ilce        VARCHAR(50),
     ada_no      VARCHAR(20),
     parsel_no   VARCHAR(20),
-    dekar       INT NOT NULL,
-    FOREIGN KEY (ciftci_id)  REFERENCES ciftciler(ciftci_id),
-    FOREIGN KEY (plaka_kodu) REFERENCES iller(plaka_kodu)
+    dekar       INT NOT NULL
 );
-GO
 
 CREATE TABLE urunler (
-    urun_id     INT PRIMARY KEY IDENTITY(1,1),
+    urun_id     SERIAL PRIMARY KEY,
     urun_adi    VARCHAR(50) NOT NULL,
     tur         VARCHAR(30),
     birim       VARCHAR(10)
 );
-GO
 
 CREATE TABLE ekim_hasat (
-    islem_id        INT PRIMARY KEY IDENTITY(1,1),
-    tarla_id        INT NOT NULL,
-    urun_id         INT NOT NULL,
+    islem_id        SERIAL PRIMARY KEY,
+    tarla_id        INT NOT NULL REFERENCES tarlalar(tarla_id),
+    urun_id         INT NOT NULL REFERENCES urunler(urun_id),
     ekim_tar        DATE NOT NULL,
     tahmini_hasat   DATE,
     gercek_hasat    DATE,
     hasat_miktari   DECIMAL(10,2),
     durum           VARCHAR(30) DEFAULT 'ekildi',
-    notlar          VARCHAR(300),
-    FOREIGN KEY (tarla_id) REFERENCES tarlalar(tarla_id),
-    FOREIGN KEY (urun_id)  REFERENCES urunler(urun_id)
+    notlar          VARCHAR(300)
 );
-GO
 
 CREATE TABLE tarim_stok (
-    stok_id         INT PRIMARY KEY IDENTITY(1,1),
+    stok_id         SERIAL PRIMARY KEY,
     malzeme_adi     VARCHAR(50) NOT NULL,
-    tur             VARCHAR(30),   -- gubre, ilac, tohum, yakit, ekipman, yem
+    tur             VARCHAR(30),
     stok_adet       INT DEFAULT 0,
     birim_fiyat     DECIMAL(10,2)
 );
-GO
 
 CREATE TABLE bakim_islemleri (
-    bakim_id        INT PRIMARY KEY IDENTITY(1,1),
-    ekim_islem_id   INT NOT NULL,
-    stok_id         INT NOT NULL,
+    bakim_id        SERIAL PRIMARY KEY,
+    ekim_islem_id   INT NOT NULL REFERENCES ekim_hasat(islem_id),
+    stok_id         INT NOT NULL REFERENCES tarim_stok(stok_id),
     miktar          INT NOT NULL,
-    islem_tar       DATETIME DEFAULT GETDATE(),
-    aciklama        VARCHAR(200),
-    FOREIGN KEY (ekim_islem_id) REFERENCES ekim_hasat(islem_id),
-    FOREIGN KEY (stok_id)       REFERENCES tarim_stok(stok_id)
+    islem_tar       TIMESTAMP DEFAULT NOW(),
+    aciklama        VARCHAR(200)
 );
-GO
 
 CREATE TABLE satislar (
-    satis_id        INT PRIMARY KEY IDENTITY(1,1),
-    ekim_islem_id   INT NOT NULL,
+    satis_id        SERIAL PRIMARY KEY,
+    ekim_islem_id   INT NOT NULL REFERENCES ekim_hasat(islem_id),
     satis_tar       DATE NOT NULL,
     alici           VARCHAR(100),
     miktar          DECIMAL(10,2) NOT NULL,
     birim_fiyat     DECIMAL(10,2) NOT NULL,
-    toplam_tutar    AS (miktar * birim_fiyat) PERSISTED,
+    toplam_tutar    DECIMAL(10,2) GENERATED ALWAYS AS (miktar * birim_fiyat) STORED,
     odeme_durumu    VARCHAR(20) DEFAULT 'beklemede',
-    notlar          VARCHAR(300),
-    FOREIGN KEY (ekim_islem_id) REFERENCES ekim_hasat(islem_id)
+    notlar          VARCHAR(300)
 );
-GO
 
 CREATE TABLE loglar (
-    log_id      INT PRIMARY KEY IDENTITY(1,1),
+    log_id      SERIAL PRIMARY KEY,
     islem       VARCHAR(50),
-    tarih       DATETIME DEFAULT GETDATE(),
+    tarih       TIMESTAMP DEFAULT NOW(),
     aciklama    VARCHAR(255)
 );
-GO
 
 
 -- ---------------------------------------------
--- STORED PROCEDURES
+-- FONKSİYONLAR (Stored Procedures)
 -- ---------------------------------------------
 
 -- Sistem özeti
-CREATE PROCEDURE sistem_ozeti
-AS
-BEGIN
+CREATE OR REPLACE FUNCTION sistem_ozeti()
+RETURNS TABLE(toplam_ciftci BIGINT, toplam_tarla BIGINT, toplam_dekar NUMERIC, toplam_ekim BIGINT, toplam_satis BIGINT)
+LANGUAGE sql AS $$
     SELECT
-        (SELECT COUNT(*) FROM ciftciler)    AS toplam_ciftci,
-        (SELECT COUNT(*) FROM tarlalar)     AS toplam_tarla,
-        (SELECT SUM(dekar) FROM tarlalar)   AS toplam_dekar,
-        (SELECT COUNT(*) FROM ekim_hasat)   AS toplam_ekim,
-        (SELECT COUNT(*) FROM satislar)     AS toplam_satis;
-END;
-GO
+        (SELECT COUNT(*) FROM ciftciler),
+        (SELECT COUNT(*) FROM tarlalar),
+        (SELECT COALESCE(SUM(dekar), 0) FROM tarlalar),
+        (SELECT COUNT(*) FROM ekim_hasat),
+        (SELECT COUNT(*) FROM satislar);
+$$;
 
 -- Tüm çiftçileri listele
-CREATE PROCEDURE tum_ciftciler
-AS
-BEGIN
+CREATE OR REPLACE FUNCTION tum_ciftciler()
+RETURNS SETOF ciftciler
+LANGUAGE sql AS $$
     SELECT * FROM ciftciler ORDER BY soyad, ad;
-END;
-GO
+$$;
 
 -- Çiftçi ara (ad veya soyad)
-CREATE PROCEDURE ciftci_ara
-    @arama_metni VARCHAR(50)
-AS
-BEGIN
+CREATE OR REPLACE FUNCTION ciftci_ara(arama_metni VARCHAR)
+RETURNS SETOF ciftciler
+LANGUAGE sql AS $$
     SELECT * FROM ciftciler
-    WHERE ad   LIKE '%' + @arama_metni + '%'
-       OR soyad LIKE '%' + @arama_metni + '%';
-END;
-GO
+    WHERE ad   ILIKE '%' || arama_metni || '%'
+       OR soyad ILIKE '%' || arama_metni || '%';
+$$;
 
 -- Çiftçinin toplam arazi miktarı
-CREATE PROCEDURE ciftci_arazi_toplami
-    @ciftci_id INT
-AS
-BEGIN
+CREATE OR REPLACE FUNCTION ciftci_arazi_toplami(p_ciftci_id INT)
+RETURNS TABLE(ad VARCHAR, soyad VARCHAR, toplam_dekar NUMERIC, tarla_sayisi BIGINT)
+LANGUAGE sql AS $$
     SELECT
         c.ad,
         c.soyad,
-        ISNULL(SUM(t.dekar), 0) AS toplam_dekar,
-        COUNT(t.tarla_id)       AS tarla_sayisi
+        COALESCE(SUM(t.dekar), 0),
+        COUNT(t.tarla_id)
     FROM ciftciler c
     LEFT JOIN tarlalar t ON c.ciftci_id = t.ciftci_id
-    WHERE c.ciftci_id = @ciftci_id
+    WHERE c.ciftci_id = p_ciftci_id
     GROUP BY c.ad, c.soyad;
-END;
-GO
+$$;
 
--- Belirli dekarin üzerindeki tarlalar
-CREATE PROCEDURE buyuk_tarlalar
-    @minimum_dekar INT
-AS
-BEGIN
+-- Belirli dekarın üzerindeki tarlalar
+CREATE OR REPLACE FUNCTION buyuk_tarlalar(minimum_dekar INT)
+RETURNS TABLE(
+    tarla_id INT, ciftci_id INT, plaka_kodu INT,
+    ilce VARCHAR, ada_no VARCHAR, parsel_no VARCHAR,
+    dekar INT, ciftci_adi TEXT, il_adi VARCHAR
+)
+LANGUAGE sql AS $$
     SELECT
-        t.*,
-        c.ad + ' ' + c.soyad AS ciftci_adi,
+        t.tarla_id, t.ciftci_id, t.plaka_kodu,
+        t.ilce, t.ada_no, t.parsel_no, t.dekar,
+        c.ad || ' ' || c.soyad AS ciftci_adi,
         i.il_adi
     FROM tarlalar t
     JOIN ciftciler c ON t.ciftci_id = c.ciftci_id
     JOIN iller i     ON t.plaka_kodu = i.plaka_kodu
-    WHERE t.dekar >= @minimum_dekar
+    WHERE t.dekar >= minimum_dekar
     ORDER BY t.dekar DESC;
-END;
-GO
+$$;
 
 -- Aktif ekimler (hasat edilmemiş)
-CREATE PROCEDURE aktif_ekimler
-AS
-BEGIN
+CREATE OR REPLACE FUNCTION aktif_ekimler()
+RETURNS TABLE(
+    islem_id INT, ciftci_adi TEXT, il_adi VARCHAR,
+    ilce VARCHAR, urun_adi VARCHAR, ekim_tar DATE,
+    tahmini_hasat DATE, durum VARCHAR
+)
+LANGUAGE sql AS $$
     SELECT
         e.islem_id,
-        c.ad + ' ' + c.soyad   AS ciftci_adi,
+        c.ad || ' ' || c.soyad AS ciftci_adi,
         i.il_adi,
         t.ilce,
         u.urun_adi,
@@ -200,25 +179,27 @@ BEGIN
     JOIN urunler u   ON e.urun_id = u.urun_id
     WHERE e.durum != 'hasat edildi'
     ORDER BY e.tahmini_hasat;
-END;
-GO
+$$;
 
 -- Stok durumu
-CREATE PROCEDURE stok_durumu
-AS
-BEGIN
-    SELECT * FROM tarim_stok
-    ORDER BY tur, malzeme_adi;
-END;
-GO
+CREATE OR REPLACE FUNCTION stok_durumu()
+RETURNS SETOF tarim_stok
+LANGUAGE sql AS $$
+    SELECT * FROM tarim_stok ORDER BY tur, malzeme_adi;
+$$;
 
 -- Satış raporu
-CREATE PROCEDURE satis_raporu
-AS
-BEGIN
+CREATE OR REPLACE FUNCTION satis_raporu()
+RETURNS TABLE(
+    satis_id INT, ciftci_adi TEXT, urun_adi VARCHAR,
+    satis_tar DATE, alici VARCHAR, miktar DECIMAL,
+    birim VARCHAR, birim_fiyat DECIMAL, toplam_tutar DECIMAL,
+    odeme_durumu VARCHAR
+)
+LANGUAGE sql AS $$
     SELECT
         s.satis_id,
-        c.ad + ' ' + c.soyad   AS ciftci_adi,
+        c.ad || ' ' || c.soyad AS ciftci_adi,
         u.urun_adi,
         s.satis_tar,
         s.alici,
@@ -233,154 +214,156 @@ BEGIN
     JOIN ciftciler c  ON t.ciftci_id = c.ciftci_id
     JOIN urunler u    ON e.urun_id = u.urun_id
     ORDER BY s.satis_tar DESC;
-END;
-GO
+$$;
 
 -- İle göre tarlalar
-CREATE PROCEDURE ile_gore_tarlalar
-    @plaka INT
-AS
-BEGIN
+CREATE OR REPLACE FUNCTION ile_gore_tarlalar(p_plaka INT)
+RETURNS TABLE(
+    tarla_id INT, ciftci_id INT, plaka_kodu INT,
+    ilce VARCHAR, ada_no VARCHAR, parsel_no VARCHAR,
+    dekar INT, ciftci_adi TEXT
+)
+LANGUAGE sql AS $$
     SELECT
-        t.*,
-        c.ad + ' ' + c.soyad AS ciftci_adi
+        t.tarla_id, t.ciftci_id, t.plaka_kodu,
+        t.ilce, t.ada_no, t.parsel_no, t.dekar,
+        c.ad || ' ' || c.soyad AS ciftci_adi
     FROM tarlalar t
     JOIN ciftciler c ON t.ciftci_id = c.ciftci_id
-    WHERE t.plaka_kodu = @plaka;
-END;
-GO
+    WHERE t.plaka_kodu = p_plaka;
+$$;
 
 -- Genç çiftçiler
-CREATE PROCEDURE genc_ciftciler
-    @tarih DATE
-AS
-BEGIN
-    SELECT * FROM ciftciler
-    WHERE dogum_tar > @tarih
-    ORDER BY dogum_tar DESC;
-END;
-GO
+CREATE OR REPLACE FUNCTION genc_ciftciler(p_tarih DATE)
+RETURNS SETOF ciftciler
+LANGUAGE sql AS $$
+    SELECT * FROM ciftciler WHERE dogum_tar > p_tarih ORDER BY dogum_tar DESC;
+$$;
 
 -- Çiftçi sil (bağlı kayıtlarla birlikte)
-CREATE PROCEDURE ciftci_sil
-    @ciftci_id INT
-AS
-BEGIN
-    DELETE FROM tarlalar WHERE ciftci_id = @ciftci_id;
-    DELETE FROM ciftciler WHERE ciftci_id = @ciftci_id;
-END;
-GO
+CREATE OR REPLACE FUNCTION ciftci_sil(p_ciftci_id INT)
+RETURNS void
+LANGUAGE sql AS $$
+    DELETE FROM tarlalar WHERE ciftci_id = p_ciftci_id;
+    DELETE FROM ciftciler WHERE ciftci_id = p_ciftci_id;
+$$;
 
 -- Kaç çiftçi var
-CREATE PROCEDURE kac_ciftci_var
-AS
-BEGIN
-    SELECT COUNT(*) AS toplam_sayi FROM ciftciler;
-END;
-GO
+CREATE OR REPLACE FUNCTION kac_ciftci_var()
+RETURNS BIGINT
+LANGUAGE sql AS $$
+    SELECT COUNT(*) FROM ciftciler;
+$$;
 
 
 -- ---------------------------------------------
--- TRIGGER'LAR
+-- TRIGGER FONKSİYONLARI
 -- ---------------------------------------------
 
 -- Çiftçi eklenince log yaz
-CREATE TRIGGER trg_ciftci_ekle_log
-ON ciftciler
-AFTER INSERT
-AS
+CREATE OR REPLACE FUNCTION fn_ciftci_ekle_log()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
     INSERT INTO loglar (islem, aciklama)
     VALUES ('CIFTCI_EKLENDI', 'Sisteme yeni bir çiftçi kaydı eklendi.');
+    RETURN NEW;
 END;
-GO
+$$;
+CREATE TRIGGER trg_ciftci_ekle_log
+AFTER INSERT ON ciftciler
+FOR EACH ROW EXECUTE FUNCTION fn_ciftci_ekle_log();
 
 -- Çiftçi silinince log yaz
-CREATE TRIGGER trg_ciftci_sil_log
-ON ciftciler
-AFTER DELETE
-AS
+CREATE OR REPLACE FUNCTION fn_ciftci_sil_log()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
     INSERT INTO loglar (islem, aciklama)
     VALUES ('CIFTCI_SILINDI', 'Bir çiftçi kaydı sistemden silindi.');
+    RETURN OLD;
 END;
-GO
+$$;
+CREATE TRIGGER trg_ciftci_sil_log
+AFTER DELETE ON ciftciler
+FOR EACH ROW EXECUTE FUNCTION fn_ciftci_sil_log();
 
 -- Ad ve soyadı otomatik büyüt
-CREATE TRIGGER trg_isim_buyut
-ON ciftciler
-AFTER INSERT, UPDATE
-AS
+CREATE OR REPLACE FUNCTION fn_isim_buyut()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
-    UPDATE ciftciler
-    SET ad    = UPPER(ad),
-        soyad = UPPER(soyad)
-    WHERE ciftci_id IN (SELECT ciftci_id FROM inserted);
+    NEW.ad    := UPPER(NEW.ad);
+    NEW.soyad := UPPER(NEW.soyad);
+    RETURN NEW;
 END;
-GO
+$$;
+CREATE TRIGGER trg_isim_buyut
+BEFORE INSERT OR UPDATE ON ciftciler
+FOR EACH ROW EXECUTE FUNCTION fn_isim_buyut();
 
 -- Kayıt tarihi değiştirilemez
-CREATE TRIGGER trg_kayit_tar_degismez
-ON ciftciler
-AFTER UPDATE
-AS
+CREATE OR REPLACE FUNCTION fn_kayit_tar_degismez()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
-    IF UPDATE(kayit_tar)
-    BEGIN
-        ROLLBACK TRANSACTION;
-        PRINT 'Kayıt tarihi sonradan değiştirilemez.';
-    END
+    IF NEW.kayit_tar IS DISTINCT FROM OLD.kayit_tar THEN
+        RAISE EXCEPTION 'Kayıt tarihi sonradan değiştirilemez.';
+    END IF;
+    RETURN NEW;
 END;
-GO
+$$;
+CREATE TRIGGER trg_kayit_tar_degismez
+BEFORE UPDATE ON ciftciler
+FOR EACH ROW EXECUTE FUNCTION fn_kayit_tar_degismez();
 
 -- İlçeyi otomatik büyüt, boşsa MERKEZ yap
-CREATE TRIGGER trg_ilce_duzenle
-ON tarlalar
-AFTER INSERT, UPDATE
-AS
+CREATE OR REPLACE FUNCTION fn_ilce_duzenle()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
-    UPDATE tarlalar
-    SET ilce = 'MERKEZ'
-    WHERE ilce IS NULL
-      AND tarla_id IN (SELECT tarla_id FROM inserted);
-
-    UPDATE tarlalar
-    SET ilce = UPPER(ilce)
-    WHERE tarla_id IN (SELECT tarla_id FROM inserted);
+    IF NEW.ilce IS NULL OR TRIM(NEW.ilce) = '' THEN
+        NEW.ilce := 'MERKEZ';
+    ELSE
+        NEW.ilce := UPPER(NEW.ilce);
+    END IF;
+    RETURN NEW;
 END;
-GO
+$$;
+CREATE TRIGGER trg_ilce_duzenle
+BEFORE INSERT OR UPDATE ON tarlalar
+FOR EACH ROW EXECUTE FUNCTION fn_ilce_duzenle();
 
 -- İller tablosu değiştirilemez
-CREATE TRIGGER trg_iller_sabittir
-ON iller
-AFTER UPDATE, DELETE
-AS
+CREATE OR REPLACE FUNCTION fn_iller_sabittir()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
-    ROLLBACK TRANSACTION;
-    PRINT 'İl bilgileri sabittir, değişiklik yapılamaz.';
+    RAISE EXCEPTION 'İl bilgileri sabittir, değişiklik yapılamaz.';
+    RETURN NULL;
 END;
-GO
+$$;
+CREATE TRIGGER trg_iller_sabittir
+BEFORE UPDATE OR DELETE ON iller
+FOR EACH ROW EXECUTE FUNCTION fn_iller_sabittir();
 
 -- Bakım işlemi eklenince stoktan düş
-CREATE TRIGGER trg_stok_guncelle
-ON bakim_islemleri
-AFTER INSERT
-AS
+CREATE OR REPLACE FUNCTION fn_stok_guncelle()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
     UPDATE tarim_stok
-    SET stok_adet = stok_adet - i.miktar
-    FROM tarim_stok ts
-    JOIN inserted i ON ts.stok_id = i.stok_id;
+    SET stok_adet = stok_adet - NEW.miktar
+    WHERE stok_id = NEW.stok_id;
+    RETURN NEW;
 END;
-GO
+$$;
+CREATE TRIGGER trg_stok_guncelle
+AFTER INSERT ON bakim_islemleri
+FOR EACH ROW EXECUTE FUNCTION fn_stok_guncelle();
 
 -- Ekim eklenince log yaz
-CREATE TRIGGER trg_ekim_log
-ON ekim_hasat
-AFTER INSERT
-AS
+CREATE OR REPLACE FUNCTION fn_ekim_log()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
     INSERT INTO loglar (islem, aciklama)
     VALUES ('EKIM_EKLENDI', 'Yeni bir ekim/hasat kaydı oluşturuldu.');
+    RETURN NEW;
 END;
-GO
+$$;
+CREATE TRIGGER trg_ekim_log
+AFTER INSERT ON ekim_hasat
+FOR EACH ROW EXECUTE FUNCTION fn_ekim_log();

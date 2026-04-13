@@ -1,3 +1,5 @@
 flask
-pyodbc
+psycopg2-binary
 python-dotenv
+flask-mail
+gunicorn
