@@ -175,46 +175,6 @@ Bootstrap 5 ile responsive (mobil uyumlu) tasarım yapılmıştır.
 
 ---
 
-## Kurulum
-
-### Gereksinimler
-- Python 3.12+
-- Docker (MS SQL Server için)
-- ODBC Driver 17 for SQL Server
-
-### Adımlar
-
-```bash
-# 1. Repoyu klonla
-git clone https://github.com/erenkozarva/tarim-takip.git
-cd tarim-takip
-
-# 2. Sanal ortam oluştur ve aktif et
-python3 -m venv venv
-source venv/bin/activate
-
-# 3. Bağımlılıkları yükle
-pip install -r requirements.txt
-
-# 4. .env dosyasını düzenle
-cp .env.example .env
-# DB_PASSWORD alanına kendi şifreni gir
-
-# 5. Docker'da MS SQL Server'ı başlat
-docker start mssql
-
-# 6. Veritabanını oluştur (Azure Data Studio veya sqlcmd ile)
-# db/schema.sql → önce çalıştır
-# db/seed.sql   → sonra çalıştır
-
-# 7. Uygulamayı başlat
-python3 app.py
-```
-
-Tarayıcıda aç: [http://127.0.0.1:5000](http://127.0.0.1:5000)
-
----
-
 ## Canlı Demo
 
 [https://tarim-takip.onrender.com](https://tarim-takip.onrender.com)
