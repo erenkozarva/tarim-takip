@@ -20,6 +20,7 @@
                     <th>Gerçek Hasat</th>
                     <th>Miktar</th>
                     <th>Durum</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -40,6 +41,13 @@
                             <span class="badge bg-primary">{{ e[10] }}</span>
                         {% else %}
                             <span class="badge bg-warning text-dark">{{ e[10] }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if session.get('giris_yapildi') and e[10] != 'hasat edildi' %}
+                        <a href="/ekim/hasat/{{ e[0] }}" class="btn btn-sm btn-success">
+                            <i class="bi bi-check2-circle"></i> Hasadı Tamamla
+                        </a>
                         {% endif %}
                     </td>
                 </tr>

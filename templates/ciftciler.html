@@ -30,11 +30,13 @@
                     <td>{{ c[5] }}</td>
                     <td>{{ c[6].strftime('%d.%m.%Y') if c[6] else '-' }}</td>
                     <td>
+                        {% if session.get('giris_yapildi') %}
                         <a href="/ciftciler/sil/{{ c[0] }}"
                            class="btn btn-sm btn-outline-danger"
                            onclick="return confirm('Bu çiftçiyi silmek istediğinize emin misiniz?')">
                             <i class="bi bi-trash"></i>
                         </a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

@@ -1,42 +1,98 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2 class="mb-4"><i class="bi bi-speedometer2"></i> Dashboard</h2>
-
-<div class="row g-4 mb-4">
-    <div class="col-md-4">
-        <div class="card stat-card p-4">
-            <div class="text-muted small">Toplam Çiftçi</div>
-            <div class="display-6">{{ ozet.toplam_ciftci }}</div>
+<!-- Hero Bölümü -->
+<div class="animate-fadein delay-1" style="
+    background: linear-gradient(135deg, #2d6a2d 0%, #4a9e4a 100%);
+    border-radius: 16px;
+    color: white;
+    padding: 48px 40px;
+    margin-bottom: 36px;
+">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="fw-bold mb-2" style="font-size: 2.2rem;">
+                <i class="bi bi-flower1"></i> Tarım Takip Sistemine Hoş Geldiniz
+            </h1>
+            <p class="mb-3" style="font-size: 1.1rem; opacity: 0.9;">
+                Çiftçilerinizi, tarlalarınızı, ekim ve hasat süreçlerinizi tek bir yerden yönetin.
+            </p>
+            <a href="/ciftciler/ekle" class="btn btn-light fw-bold me-2">
+                <i class="bi bi-person-plus"></i> Hemen Başla
+            </a>
+            <a href="/iletisim" class="btn btn-outline-light">
+                <i class="bi bi-envelope"></i> Bize Ulaşın
+            </a>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card stat-card p-4">
-            <div class="text-muted small">Toplam Tarla</div>
-            <div class="display-6">{{ ozet.toplam_tarla }}</div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card stat-card p-4">
-            <div class="text-muted small">Toplam Arazi (Dekar)</div>
-            <div class="display-6">{{ ozet.toplam_dekar }}</div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card stat-card p-4">
-            <div class="text-muted small">Toplam Ekim Kaydı</div>
-            <div class="display-6">{{ ozet.toplam_ekim }}</div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card stat-card p-4">
-            <div class="text-muted small">Toplam Satış</div>
-            <div class="display-6">{{ ozet.toplam_satis }}</div>
+        <div class="col-md-4 text-center d-none d-md-block">
+            <i class="bi bi-tree" style="font-size: 7rem; opacity: 0.3;"></i>
         </div>
     </div>
 </div>
 
-<div class="row g-3">
+<!-- İstatistik Kartları -->
+<h5 class="text-muted mb-3 animate-fadeinup delay-2">Genel Durum</h5>
+<div class="row g-4 mb-4">
+    <div class="col-md-4 animate-fadeinup delay-2">
+        <div class="card stat-card p-4">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-people-fill" style="font-size:2rem; color:#2d6a2d;"></i>
+                <div>
+                    <div class="text-muted small">Toplam Çiftçi</div>
+                    <div class="display-6">{{ ozet.toplam_ciftci }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 animate-fadeinup delay-3">
+        <div class="card stat-card p-4">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-map-fill" style="font-size:2rem; color:#2d6a2d;"></i>
+                <div>
+                    <div class="text-muted small">Toplam Tarla</div>
+                    <div class="display-6">{{ ozet.toplam_tarla }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 animate-fadeinup delay-4">
+        <div class="card stat-card p-4">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-rulers" style="font-size:2rem; color:#2d6a2d;"></i>
+                <div>
+                    <div class="text-muted small">Toplam Arazi (Dekar)</div>
+                    <div class="display-6">{{ ozet.toplam_dekar }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 animate-fadeinup delay-4">
+        <div class="card stat-card p-4">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-calendar-check-fill" style="font-size:2rem; color:#2d6a2d;"></i>
+                <div>
+                    <div class="text-muted small">Toplam Ekim Kaydı</div>
+                    <div class="display-6">{{ ozet.toplam_ekim }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 animate-fadeinup delay-5">
+        <div class="card stat-card p-4">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-cash-stack" style="font-size:2rem; color:#2d6a2d;"></i>
+                <div>
+                    <div class="text-muted small">Toplam Satış</div>
+                    <div class="display-6">{{ ozet.toplam_satis }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hızlı Erişim Butonları -->
+<h5 class="text-muted mb-3 animate-fadeinup delay-5">Hızlı İşlemler</h5>
+<div class="row g-3 animate-fadeinup delay-6">
     <div class="col-md-4">
         <a href="/ciftciler/ekle" class="btn btn-primary w-100 py-3">
             <i class="bi bi-person-plus"></i> Yeni Çiftçi Ekle

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-plus-lg"></i> Yeni Satış Ekle</h2>
+    <a href="/satislar" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Geri</a>
+</div>
+
+<div class="card p-4" style="max-width:600px;">
+    {% if not ekimler %}
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i>
+        Henüz tamamlanmış hasat kaydı yok. Önce bir
+        <a href="/ekim" class="alert-link">ekim kaydını hasatla</a>, ardından satış ekleyin.
+    </div>
+    {% else %}
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Hasat Kaydı</label>
+            <select name="ekim_islem_id" class="form-select" required>
+                <option value="">Seçiniz...</option>
+                {% for e in ekimler %}
+                <option value="{{ e[0] }}">{{ e[1] }}</option>
+                {% endfor %}
+            </select>
+            <small class="text-muted">Yalnızca hasadı tamamlanan kayıtlar listeleniyor.</small>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Satış Tarihi</label>
+            <input type="date" name="satis_tar" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Alıcı</label>
+            <input type="text" name="alici" class="form-control" placeholder="Alıcı adı veya firma">
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Miktar</label>
+            <input type="number" name="miktar" class="form-control" step="0.01" min="0" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Birim Fiyat (₺)</label>
+            <input type="number" name="birim_fiyat" class="form-control" step="0.01" min="0" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Ödeme Durumu</label>
+            <select name="odeme_durumu" class="form-select">
+                <option value="beklemede">Beklemede</option>
+                <option value="odendi">Ödendi</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Notlar</label>
+            <textarea name="notlar" class="form-control" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 fw-bold">
+            <i class="bi bi-save"></i> Kaydet
+        </button>
+    </form>
+    {% endif %}
+</div>
+
+{% endblock %}

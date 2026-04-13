@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <div class="card p-4 mt-4 animate-fadeinup delay-1">
+            <h4 class="mb-4 text-center"><i class="bi bi-lock"></i> Yönetici Girişi</h4>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Kullanıcı Adı</label>
+                    <input type="text" name="kullanici" class="form-control" required autofocus>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Şifre</label>
+                    <input type="password" name="sifre" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 fw-bold">
+                    <i class="bi bi-box-arrow-in-right"></i> Giriş Yap
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

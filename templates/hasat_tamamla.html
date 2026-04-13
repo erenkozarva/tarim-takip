@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-check2-circle"></i> Hasadı Tamamla</h2>
+    <a href="/ekim" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Geri</a>
+</div>
+
+<div class="card p-4" style="max-width:600px;">
+    <div class="alert alert-info mb-4">
+        <strong>{{ ekim[1] }}</strong> — {{ ekim[4] }}<br>
+        <small class="text-muted">{{ ekim[2] }} / {{ ekim[3] }} &nbsp;|&nbsp; Ekim: {{ ekim[5] }}</small>
+    </div>
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Gerçek Hasat Tarihi</label>
+            <input type="date" name="gercek_hasat" class="form-control" required>
+        </div>
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Hasat Miktarı ({{ ekim[9] }})</label>
+            <input type="number" name="hasat_miktari" class="form-control"
+                   step="0.01" min="0" placeholder="0.00" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100 fw-bold">
+            <i class="bi bi-check2-circle"></i> Hasadı Kaydet
+        </button>
+    </form>
+</div>
+
+{% endblock %}
