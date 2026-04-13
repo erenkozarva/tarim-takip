@@ -215,6 +215,12 @@ Tarayıcıda aç: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ---
 
+## Canlı Demo
+
+[https://tarim-takip.onrender.com](https://tarim-takip.onrender.com)
+
+---
+
 ## Ekran Görüntüleri
 
 > Dashboard, çiftçi listesi, ekim/hasat kayıtları ve satış raporu ekranlarını içermektedir.
