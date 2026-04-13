@@ -221,7 +221,16 @@ Tarayıcıda aç: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ---
 
-## Geliştirici
+## Ekip
 
-**Eren Kozarva**  
-GitHub: [github.com/erenkozarva](https://github.com/erenkozarva)
+Bu proje aşağıdaki kişiler tarafından birlikte geliştirilmiştir:
+
+| İsim |
+|------|
+| Eren Kozarva |
+| Melisa Düzgün |
+| Ayşe Azra Şehitoğlu |
+| Aysu Akbaba |
+| Arda Sayır |
+| Ahmet Emre Akyazı |
+| Nasiba Samedova |

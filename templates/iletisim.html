@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+
+        <div class="animate-fadeinup delay-1">
+            <h2 class="mb-1"><i class="bi bi-envelope"></i> Bize Ulaşın</h2>
+            <p class="text-muted mb-4">
+                Sistemi kullanırken fark ettiğiniz eksiklikler, öneriler veya sorularınız için bize yazabilirsiniz.
+            </p>
+        </div>
+
+        <div class="card p-4 animate-fadeinup delay-2">
+            <form method="POST" action="/iletisim">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Adınız Soyadınız</label>
+                    <input type="text" name="ad_soyad" class="form-control" placeholder="Adınız Soyadınız" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">E-posta Adresiniz</label>
+                    <input type="email" name="email" class="form-control" placeholder="ornek@mail.com" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Konu</label>
+                    <select name="konu" class="form-select">
+                        <option value="Öneri">Öneri</option>
+                        <option value="Eksik / Hata Bildirimi">Eksik / Hata Bildirimi</option>
+                        <option value="Genel Soru">Genel Soru</option>
+                        <option value="Diğer">Diğer</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Mesajınız</label>
+                    <textarea name="mesaj" class="form-control" rows="5"
+                        placeholder="Düşüncelerinizi buraya yazın..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                    <i class="bi bi-send"></i> Gönder
+                </button>
+            </form>
+        </div>
+
+        <div class="card p-4 mt-4 animate-fadeinup delay-3">
+            <h6 class="fw-bold mb-3"><i class="bi bi-info-circle"></i> İletişim Bilgileri</h6>
+            <p class="mb-1">
+                <i class="bi bi-envelope-fill text-success me-2"></i>
+                <a href="mailto:sistemanalizigrup2iau@gmail.com">sistemanalizigrup2iau@gmail.com</a>
+            </p>
+            <p class="mb-0 text-muted small">Mesajlarınıza en kısa sürede dönüş yapılacaktır.</p>
+        </div>
+
+        <div class="card p-4 mt-4 animate-fadeinup delay-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-people-fill text-success"></i> Emeği Geçenler</h6>
+            <div class="row g-2">
+                <div class="col-6 col-md-4">
+                    <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#f0f7f0;">
+                        <i class="bi bi-person-circle text-success fs-5"></i>
+                        <span class="small fw-semibold">Eren Kozarva</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#f0f7f0;">
+                        <i class="bi bi-person-circle text-success fs-5"></i>
+                        <span class="small fw-semibold">Melisa Düzgün</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#f0f7f0;">
+                        <i class="bi bi-person-circle text-success fs-5"></i>
+                        <span class="small fw-semibold">Ayşe Azra Şehitoğlu</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#f0f7f0;">
+                        <i class="bi bi-person-circle text-success fs-5"></i>
+                        <span class="small fw-semibold">Aysu Akbaba</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#f0f7f0;">
+                        <i class="bi bi-person-circle text-success fs-5"></i>
+                        <span class="small fw-semibold">Arda Sayır</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#f0f7f0;">
+                        <i class="bi bi-person-circle text-success fs-5"></i>
+                        <span class="small fw-semibold">Ahmet Emre Akyazı</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#f0f7f0;">
+                        <i class="bi bi-person-circle text-success fs-5"></i>
+                        <span class="small fw-semibold">Nasiba Samedova</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
