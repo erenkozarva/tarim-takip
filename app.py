@@ -83,7 +83,6 @@ def ciftciler():
     return render_template('ciftciler.html', ciftciler=rows)
 
 @app.route('/ciftciler/ekle', methods=['GET', 'POST'])
-@login_required
 def ciftci_ekle():
     if request.method == 'POST':
         tc_no     = request.form['tc_no'].strip()
@@ -154,7 +153,6 @@ def tarlalar():
     return render_template('tarlalar.html', tarlalar=rows)
 
 @app.route('/tarlalar/ekle', methods=['GET', 'POST'])
-@login_required
 def tarla_ekle():
     conn = get_db()
     cursor = conn.cursor()
@@ -204,7 +202,6 @@ def ekim():
     return render_template('ekim.html', ekimler=rows)
 
 @app.route('/ekim/ekle', methods=['GET', 'POST'])
-@login_required
 def ekim_ekle():
     conn = get_db()
     cursor = conn.cursor()
@@ -239,7 +236,6 @@ def ekim_ekle():
 # HASAT TAMAMLA
 # ---------------------------------------------
 @app.route('/ekim/hasat/<int:islem_id>', methods=['GET', 'POST'])
-@login_required
 def hasat_tamamla(islem_id):
     conn = get_db()
     cursor = conn.cursor()
@@ -288,7 +284,6 @@ def satislar():
     return render_template('satislar.html', satislar=rows)
 
 @app.route('/satislar/ekle', methods=['GET', 'POST'])
-@login_required
 def satis_ekle():
     conn = get_db()
     cursor = conn.cursor()
@@ -335,7 +330,6 @@ def stok():
     return render_template('stok.html', stoklar=rows)
 
 @app.route('/stok/ekle', methods=['GET', 'POST'])
-@login_required
 def stok_ekle():
     if request.method == 'POST':
         malzeme_adi = request.form['malzeme_adi'].strip()
