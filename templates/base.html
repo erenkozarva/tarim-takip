@@ -56,17 +56,18 @@
         footer a:hover { color: #fff; }
     </style>
     <script>
-    function tableSearch(inputId, tableId) {
-        var input = document.getElementById(inputId);
-        var tbody = document.querySelector('#' + tableId + ' tbody');
-        input.addEventListener('input', function () {
-            var q = this.value.toLowerCase().trim();
-            Array.from(tbody.rows).forEach(function (row) {
-                var text = row.innerText.toLowerCase();
-                row.style.display = q === '' || text.includes(q) ? '' : 'none';
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('input[data-table]').forEach(function (input) {
+            var tbody = document.querySelector('#' + input.dataset.table + ' tbody');
+            if (!tbody) return;
+            input.addEventListener('input', function () {
+                var q = this.value.toLowerCase().trim();
+                Array.from(tbody.rows).forEach(function (row) {
+                    row.style.display = q === '' || row.innerText.toLowerCase().includes(q) ? '' : 'none';
+                });
             });
         });
-    }
+    });
     </script>
 </head>
 <body>
