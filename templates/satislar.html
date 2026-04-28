@@ -8,9 +8,13 @@
     {% endif %}
 </div>
 
+<div class="mb-3">
+    <input id="satislar-search" type="text" class="form-control" placeholder="Çiftçi, ürün, alıcı veya ödeme durumu ile ara...">
+</div>
+
 <div class="card">
     <div class="card-body p-0">
-        <table class="table table-hover mb-0">
+        <table id="satislar-table" class="table table-hover mb-0">
             <thead>
                 <tr>
                     <th>#</th>
@@ -49,4 +53,5 @@
     </div>
 </div>
 
+<script>tableSearch('satislar-search', 'satislar-table');</script>
 {% endblock %}
