@@ -10,19 +10,19 @@
     <form method="POST">
         <div class="mb-3">
             <label class="form-label">TC No</label>
-            <input type="text" name="tc_no" class="form-control" maxlength="11" required>
+            <input type="text" name="tc_no" class="form-control gizle-alan" maxlength="11" required autocomplete="off">
         </div>
         <div class="mb-3">
             <label class="form-label">Ad</label>
-            <input type="text" name="ad" class="form-control" required>
+            <input type="text" name="ad" class="form-control gizle-alan" required autocomplete="off">
         </div>
         <div class="mb-3">
             <label class="form-label">Soyad</label>
-            <input type="text" name="soyad" class="form-control" required>
+            <input type="text" name="soyad" class="form-control gizle-alan" required autocomplete="off">
         </div>
         <div class="mb-3">
             <label class="form-label">Telefon</label>
-            <input type="text" name="tel_no" class="form-control">
+            <input type="text" name="tel_no" class="form-control gizle-alan" autocomplete="off">
         </div>
         <div class="mb-3">
             <label class="form-label">Doğum Tarihi</label>
@@ -31,5 +31,36 @@
         <button type="submit" class="btn btn-primary w-100">Kaydet</button>
     </form>
 </div>
+
+<script>
+function maskeStr(deger) {
+    if (!deger || deger.length === 0) return deger;
+    if (deger.length === 1) return deger;
+    if (deger.length === 2) return deger[0] + '*';
+    return deger[0] + '*'.repeat(deger.length - 2) + deger[deger.length - 1];
+}
+
+document.querySelectorAll('.gizle-alan').forEach(function(input) {
+    input.addEventListener('blur', function() {
+        if (this.value) {
+            this.dataset.gercek = this.value;
+            this.value = maskeStr(this.value);
+        }
+    });
+    input.addEventListener('focus', function() {
+        if (this.dataset.gercek !== undefined) {
+            this.value = this.dataset.gercek;
+        }
+    });
+});
+
+document.querySelector('form').addEventListener('submit', function() {
+    document.querySelectorAll('.gizle-alan').forEach(function(input) {
+        if (input.dataset.gercek !== undefined) {
+            input.value = input.dataset.gercek;
+        }
+    });
+});
+</script>
 
 {% endblock %}
