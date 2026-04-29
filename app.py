@@ -45,6 +45,14 @@ def maskele_tam_ad(tam_ad):
         return tam_ad
     return ' '.join(maskele_ad(parca) for parca in tam_ad.split())
 
+@app.template_filter('maskele_on_ad')
+def maskele_on_ad(metin):
+    if not metin:
+        return metin
+    parcalar = metin.split(' — ', 1)
+    parcalar[0] = maskele_tam_ad(parcalar[0])
+    return ' — '.join(parcalar)
+
 # ---------------------------------------------
 # GİRİŞ / ÇIKIŞ
 # ---------------------------------------------

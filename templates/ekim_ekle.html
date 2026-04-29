@@ -21,7 +21,7 @@
             <select name="tarla_id" class="form-select" required>
                 <option value="">Seçiniz...</option>
                 {% for t in tarlalar %}
-                <option value="{{ t[0] }}">{{ t[1] }}</option>
+                <option value="{{ t[0] }}">{{ t[1] | maskele_on_ad }}</option>
                 {% endfor %}
             </select>
         </div>

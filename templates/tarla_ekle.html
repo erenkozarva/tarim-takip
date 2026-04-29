@@ -13,7 +13,7 @@
             <select name="ciftci_id" class="form-select" required>
                 <option value="">Seçiniz...</option>
                 {% for c in ciftciler %}
-                <option value="{{ c[0] }}">{{ c[1] }}</option>
+                <option value="{{ c[0] }}">{{ c[1] | maskele_tam_ad }}</option>
                 {% endfor %}
             </select>
         </div>
