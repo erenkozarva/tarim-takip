@@ -39,6 +39,12 @@ def maskele_ad(ad):
         return ad[0] + '*' * (len(ad) - 1)
     return ad[0] + '*' * (len(ad) - 2) + ad[-1]
 
+@app.template_filter('maskele_tam_ad')
+def maskele_tam_ad(tam_ad):
+    if not tam_ad:
+        return tam_ad
+    return ' '.join(maskele_ad(parca) for parca in tam_ad.split())
+
 # ---------------------------------------------
 # GİRİŞ / ÇIKIŞ
 # ---------------------------------------------
