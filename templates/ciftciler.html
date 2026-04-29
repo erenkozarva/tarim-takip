@@ -28,9 +28,9 @@
                 {% for c in ciftciler %}
                 <tr>
                     <td>{{ c[0] }}</td>
-                    <td>{{ c[1] }}</td>
+                    <td>{{ c[1] | maskele_tc }}</td>
                     <td>{{ c[2] }} {{ c[3] }}</td>
-                    <td>{{ c[4] }}</td>
+                    <td>{{ c[4] | maskele_tel if c[4] else '-' }}</td>
                     <td>{{ c[5] }}</td>
                     <td>{{ c[6].strftime('%d.%m.%Y') if c[6] else '-' }}</td>
                     <td>

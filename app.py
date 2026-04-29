@@ -19,6 +19,18 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')
 
 mail = Mail(app)
 
+@app.template_filter('maskele_tc')
+def maskele_tc(tc):
+    if not tc or len(tc) < 2:
+        return tc
+    return tc[0] + '*' * (len(tc) - 2) + tc[-1]
+
+@app.template_filter('maskele_tel')
+def maskele_tel(tel):
+    if not tel or len(tel) < 4:
+        return tel
+    return tel[:3] + '*' * (len(tel) - 5) + tel[-2:]
+
 # ---------------------------------------------
 # GİRİŞ / ÇIKIŞ
 # ---------------------------------------------
