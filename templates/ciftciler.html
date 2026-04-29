@@ -7,7 +7,8 @@
 </div>
 
 <div class="mb-3">
-    <input type="text" data-table="ciftciler-table" class="form-control" placeholder="TC No, ad, soyad veya telefon ile ara...">
+    <input type="text" data-table="ciftciler-table" class="form-control" placeholder="TC No veya telefon ile ara...">
+
 </div>
 
 <div class="card">
@@ -19,7 +20,7 @@
                     <th>TC No</th>
                     <th>Ad Soyad</th>
                     <th>Telefon</th>
-                    <th>Doğum Tarihi</th>
+                    <th>Doğum Yılı</th>
                     <th>Kayıt Tarihi</th>
                     <th></th>
                 </tr>
@@ -29,9 +30,9 @@
                 <tr>
                     <td>{{ c[0] }}</td>
                     <td>{{ c[1] | maskele_tc }}</td>
-                    <td>{{ c[2] }} {{ c[3] }}</td>
+                    <td>{{ c[2] | maskele_ad }} {{ c[3] | maskele_ad }}</td>
                     <td>{{ c[4] | maskele_tel if c[4] else '-' }}</td>
-                    <td>{{ c[5] }}</td>
+                    <td>{{ (c[5].year | string)[:2] ~ '**' if c[5] else '-' }}</td>
                     <td>{{ c[6].strftime('%d.%m.%Y') if c[6] else '-' }}</td>
                     <td>
                         {% if session.get('giris_yapildi') %}

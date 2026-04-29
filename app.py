@@ -31,6 +31,14 @@ def maskele_tel(tel):
         return tel
     return tel[:3] + '*' * (len(tel) - 5) + tel[-2:]
 
+@app.template_filter('maskele_ad')
+def maskele_ad(ad):
+    if not ad:
+        return ad
+    if len(ad) <= 2:
+        return ad[0] + '*' * (len(ad) - 1)
+    return ad[0] + '*' * (len(ad) - 2) + ad[-1]
+
 # ---------------------------------------------
 # GİRİŞ / ÇIKIŞ
 # ---------------------------------------------
